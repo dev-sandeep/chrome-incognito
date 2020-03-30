@@ -15,10 +15,24 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
   chrome.contextMenus.create({
-    id: "skip-history",
-    title: "Skip this website from chrom-history",
+    id: "reset-incognito-list",
+    title: "Reset incognito list",
     contexts: ["all"],
   });
+
+  chrome.contextMenus.create({
+    id: "skip-history",
+    title: "Skip this website from chrome-history",
+    contexts: ["all"],
+  });
+
+  chrome.contextMenus.create({
+    id: "reset-skip-list",
+    title: "Reset skip history list",
+    contexts: ["all"],
+  });
+ 
+  
 
   /**
    * not working!
@@ -72,6 +86,9 @@ chrome.runtime.onInstalled.addListener(function () {
     })
   }
 
+  //You also have the ability to restrict chrome from logging a website in history
+  //
+
   //event listner for onclick of context menus
   chrome.contextMenus.onClicked.addListener(function (info, tab) {
     try {
@@ -123,6 +140,11 @@ chrome.runtime.onInstalled.addListener(function () {
         } catch (e) {
           console.error(e);
         }
+      }
+      else if(info.menuItemId == "pause-all"){
+        chrome.storage.local.set({ 'pause-all': true }, function () {
+          console.log(tablink + ' is added to the list');
+        });
       }
 
     } catch (e) {
