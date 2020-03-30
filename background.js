@@ -31,41 +31,8 @@ chrome.runtime.onInstalled.addListener(function () {
     title: "Reset skip history list",
     contexts: ["all"],
   });
- 
-  
 
-  /**
-   * not working!
-   */
-  function decideSkipHistoryMenu() {
-    //check if the website is present in the list of skip history
-    chrome.storage.local.get('skip-history-list', (res) => {
-      chrome.tabs.getSelected(null, function (tab) {
-        res = res['skip-history-list'];
-        var isExists = false;
-        for (var i in res) {
-          if (res[i] == getBaseUrl(tab.url)) {
-            isExists = true;
-            chrome.contextMenus.create({
-              id: "skip-history1",
-              title: "Skip this website from chrom-history",
-              contexts: ["all"],
-            });
-          }
-        }
-
-        if (!isExists) {
-          chrome.contextMenus.create({
-            id: "skip-history2",
-            title: "Let this website log back in chrom-history",
-            contexts: ["all"],
-          });
-        }
-      });
-    });
-  }
-
-  function openInIncognito() {
+  function openInIncognito_old() {
     //getting the present url
     chrome.tabs.getSelected(null, function (tab) {
       var tablink = tab.url;
@@ -101,45 +68,10 @@ chrome.runtime.onInstalled.addListener(function () {
        */
       else if (info.menuItemId == "add-incognito") {
         //@todo
-        chrome.tabs.getSelected(null, function (tab) {
-          var tablink = getBaseUrl(tab.url);
-          chrome.storage.local.get('incognito-list', (res) => {
-            var arr = res['incognito-list'];
-            if (!Array.isArray(arr) || arr.length == 0) {
-              arr = [];
-            }
-
-            arr = [...arr, tablink];
-            chrome.storage.local.set({ 'incognito-list': arr }, function () {
-              console.log(tablink + ' is added to the incognito list');
-              openInIncognito();
-            });
-          });
-        });
+        setVal('incognito-list', true);
       }
       else if (info.menuItemId == "skip-history") {
-        try {
-          //getting the present url
-          chrome.tabs.getSelected(null, function (tab) {
-            var tablink = getBaseUrl(tab.url);
-
-            chrome.storage.local.get('skip-history-list', (res) => {
-              var arr = res['skip-history-list'];
-              if (!Array.isArray(arr) || arr.length == 0) {
-                arr = [];
-              }
-
-              arr = [...arr, tablink];
-              chrome.storage.local.set({ 'skip-history-list': arr }, function () {
-                console.log(tablink + ' is added to the list');
-              });
-
-            });
-
-          })
-        } catch (e) {
-          console.error(e);
-        }
+        setVal('skip-history-list');
       }
       else if(info.menuItemId == "pause-all"){
         chrome.storage.local.set({ 'pause-all': true }, function () {
@@ -152,21 +84,18 @@ chrome.runtime.onInstalled.addListener(function () {
     }
   });
 
-  function getBaseUrl(url) {
-    var pathArray = url.split('/');
-    var host = pathArray[2];
-    return host;
-  }
-
+  /**
+   * handles the action of the add-on
+   * when the tab is updated
+   */
   chrome.tabs.onUpdated.addListener(() => {
-    //not working
-    // decideSkipHistoryMenu();
     //getting the present url
     try {
       chrome.tabs.getSelected(null, function (tab) {
 
         chrome.storage.local.get('skip-history-list', (res) => {
           res = res['skip-history-list'];
+          console.log('skip-history-list', res);
           for (var i in res) {
             if (res[i] == getBaseUrl(tab.url)) {
               chrome.history.deleteUrl({ url: tab.url });
@@ -177,6 +106,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
         chrome.storage.local.get('incognito-list', (res) => {
           res = res['incognito-list'];
+          console.log('incognito-list', res);
           for (var i in res) {
             if (res[i] == getBaseUrl(tab.url)) {
               openInIncognito();
