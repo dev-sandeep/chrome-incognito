@@ -1,21 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      button {
-        height: 30px;
-        width: 30px;
-        outline: none;
-        margin: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="buttonDiv">
+
+<head>
+  <style>
+    button {
+      height: 30px;
+      width: 30px;
+      outline: none;
+      margin: 10px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <h4>custom-incognito</h4>
+      </div>
     </div>
-    <div>
-      <p>Choose a different background color!</p>
+  </nav>
+
+  <div id="buttonDiv">
+  </div>
+  <div>
+    <hr />
+    <div class="row">
+      <div class="container">
+        <div class="incognito">
+          <h4>Incognito List</h4>
+          <div id="incognito-tbl"></div>
+        </div>
+
+        <div class="Skip history">
+          <h4>Skip History List</h4>
+          <div id="history-tbl"></div>
+        </div>
+
+      </div>
     </div>
-  </body>
-  <script src="options.js"></script>
+  </div>
+</body>
+<script src="options.js"></script>
+
 </html>

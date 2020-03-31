@@ -1,15 +1,69 @@
-let page = document.getElementById('buttonDiv');
-const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
-function constructOptions(kButtonColors) {
-  for (let item of kButtonColors) {
-    let button = document.createElement('button');
-    button.style.backgroundColor = item;
-    button.addEventListener('click', function() {
-      chrome.storage.sync.set({color: item}, function() {
-        console.log('color is ' + item);
+function addTable(elementId, storageId) {
+  let incognitoId = document.getElementById(elementId);
+  var elementStr = `
+  <table class="table">
+  `;
+
+  chrome.storage.local.get(storageId, (res) => {
+    res = res[storageId];
+    for (var elem in res) {
+      elementStr += `
+      <tr>
+        <td>
+          <button class="btn btn-sm btn-primary remove-btn" type='${storageId}' url='${res[elem]}'>
+            x
+          </button>
+          <span>&nbsp;&nbsp; ${res[elem]}</span>
+        </td>
+      </tr>
+  `;
+    }
+
+    elementStr += `
+    </table>
+  `;
+    incognitoId.innerHTML = elementStr;
+  });
+}
+
+function init() {
+  addTable('incognito-tbl', 'incognito-list');
+  addTable('history-tbl', 'skip-history-list');
+  setTimeout(function () {
+    addEventListeners();
+  }, 100);
+}
+
+init();
+
+function addEventListeners() {
+  var classBtn = document.getElementsByClassName('remove-btn');
+  for (var i = 0; i < classBtn.length; i++) {
+    (function (index) {
+      classBtn[index].addEventListener("click", function () {
+        console.log("Clicked index: ", classBtn[index].getAttribute('url'), classBtn[index].getAttribute('type'));
+        let storageId = classBtn[index].getAttribute('type');
+        try {
+          chrome.storage.local.get(storageId, (res) => {
+            let list = res[storageId];
+            console.log(list);
+            removeEntry(storageId, list, classBtn[index].getAttribute('url'));
+          });
+        } catch (e) {
+          console.warn(e);
+        }
       })
-    });
-    page.appendChild(button);
+    })(i);
   }
 }
-constructOptions(kButtonColors);
+
+function removeEntry(storageId, list, val) {
+  let finalRes = list.filter((res) => res != val);
+
+  var obj = {};
+  obj[storageId] = finalRes;
+  chrome.storage.local.set(obj, function () {
+    console.log(finalRes + ' removed from ' + storageId);
+    init();
+  });
+}

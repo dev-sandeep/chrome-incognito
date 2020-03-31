@@ -15,46 +15,10 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
   chrome.contextMenus.create({
-    id: "reset-incognito-list",
-    title: "Reset incognito list",
-    contexts: ["all"],
-  });
-
-  chrome.contextMenus.create({
     id: "skip-history",
     title: "Skip this website from chrome-history",
     contexts: ["all"],
   });
-
-  chrome.contextMenus.create({
-    id: "reset-skip-list",
-    title: "Reset skip history list",
-    contexts: ["all"],
-  });
-
-  function openInIncognito_old() {
-    //getting the present url
-    chrome.tabs.getSelected(null, function (tab) {
-      var tablink = tab.url;
-
-      chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT },
-        function (tabs) {
-          //closing the tab
-          chrome.tabs.remove(tabs[0].id);
-        }
-      );
-
-      chrome.history.deleteUrl({ url: tablink });
-
-      chrome.windows.create({
-        url: tablink,
-        incognito: true
-      });
-    })
-  }
-
-  //You also have the ability to restrict chrome from logging a website in history
-  //
 
   //event listner for onclick of context menus
   chrome.contextMenus.onClicked.addListener(function (info, tab) {
