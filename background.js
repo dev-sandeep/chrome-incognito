@@ -1,4 +1,4 @@
-chrome.runtime.onInstalled.addListener(function () {
+// chrome.runtime.onInstalled.addListener(function () {
   /**
    * creating the menu
    */
@@ -83,4 +83,4 @@ chrome.runtime.onInstalled.addListener(function () {
     }
   })
 
-});
+// });
