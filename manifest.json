@@ -1,6 +1,6 @@
 {
     "name": "custom-incognito-beta",
-    "version": "1.0",
+    "version": "1.1",
     "description": "An extension for selective incognito",
     "manifest_version": 2,
     "permissions": [

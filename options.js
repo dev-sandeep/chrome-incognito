@@ -1,7 +1,7 @@
 function addTable(elementId, storageId) {
   let incognitoId = document.getElementById(elementId);
   var elementStr = `
-  <table class="table">
+  <table class="table table-striped table-dark">
   `;
 
   chrome.storage.local.get(storageId, (res) => {
@@ -10,13 +10,17 @@ function addTable(elementId, storageId) {
       elementStr += `
       <tr>
         <td>
-          <button class="btn btn-sm btn-primary remove-btn" type='${storageId}' url='${res[elem]}'>
+          <button class="btn btn-outline-light btn-sm remove-btn" type='${storageId}' url='${res[elem]}'>
             x
           </button>
           <span>&nbsp;&nbsp; ${res[elem]}</span>
         </td>
       </tr>
   `;
+    }
+
+    if(!elem){
+      elementStr += `<tr><td>Nothing added in ${storageId} list</td></tr>`;
     }
 
     elementStr += `
